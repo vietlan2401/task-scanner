@@ -1,0 +1,7 @@
+node_modules/
+dist/
+data/
+config.json
+tasks.json
+install.log
+install2.log

@@ -1,0 +1,163 @@
+/* ============================================================
+   Task Scanner - Giao dien den tuyen + xanh duong (mang thuy)
+   Font bo tron Nunito. Doi mau -> chinh bien --xxx trong :root.
+   ============================================================ */
+:root {
+  --bg: #000000;
+  --bg-2: #080808;
+  --card: #0d0d0d;
+  --card-2: #141414;
+  --border: #242424;
+  --border-2: #333333;
+  --text: #f0f0f0;
+  --muted: #8a8a8a;
+  --muted-2: #6a6a6a;
+  --primary: #2f7bf6;
+  --primary-2: #2565d8;
+  --primary-soft: #12203a;
+
+  --st-pending: #3b82f6;    --st-pending-fg: #ffffff;
+  --st-inprogress: #f5a623; --st-inprogress-fg: #000000;
+  --st-done: #25c26e;       --st-done-fg: #ffffff;
+  --st-reject: #ef4444;     --st-reject-fg: #ffffff;
+
+  --radius: 11px;
+  --font: 'Nunito', -apple-system, 'Segoe UI', Roboto, sans-serif;
+}
+
+* { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; }
+body {
+  display: flex;
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* -------- Sidebar -------- */
+.sidebar {
+  width: 200px;
+  flex-shrink: 0;
+  background: var(--bg-2);
+  border-right: 1px solid #1c1c1c;
+  display: flex;
+  flex-direction: column;
+  padding: 14px 12px;
+  gap: 5px;
+  transition: margin-left .18s ease, width .18s ease;
+}
+body.sb-collapsed .sidebar { margin-left: -212px; }
+.brand { display: flex; align-items: center; gap: 9px; padding: 2px 4px 14px; font-size: 15px; font-weight: 800; }
+.brand .logo { width: 27px; height: 27px; border-radius: 10px; background: var(--primary); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 15px; }
+nav { display: flex; flex-direction: column; gap: 4px; flex: 1; }
+.nav-item {
+  text-align: left; background: transparent; border: none;
+  color: #7d7d7d; padding: 9px 11px; border-radius: 11px;
+  cursor: pointer; font-size: 13px; font-weight: 600;
+  display: flex; align-items: center; gap: 10px; font-family: var(--font);
+}
+.nav-item:hover { background: var(--card); color: var(--text); }
+.nav-item.active { background: var(--card-2); color: #fff; font-weight: 800; }
+.nav-ico { font-size: 16px; width: 18px; text-align: center; }
+.side-footer { display: flex; flex-direction: column; gap: 8px; }
+.side-footer small { color: var(--muted-2); text-align: center; font-weight: 600; }
+
+/* -------- Content -------- */
+.content { flex: 1; overflow-y: auto; padding: 16px 22px; min-width: 0; }
+.tab { display: none; }
+.tab.active { display: block; }
+.tab-head { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; }
+.tab-head h1 { font-size: 20px; margin: 0; font-weight: 800; }
+h3 { margin: 0 0 6px; font-weight: 800; }
+.toggle-sb {
+  width: 32px; height: 32px; border-radius: 9px; border: 1px solid var(--border);
+  background: transparent; color: #cfcfcf; cursor: pointer; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center; font-size: 17px;
+}
+.toggle-sb:hover { background: var(--card); }
+.count { background: var(--primary); color: #fff; font-size: 12px; font-weight: 700; padding: 1px 9px; border-radius: 999px; }
+.muted { color: var(--muted); font-weight: 600; }
+.toolbar { display: flex; gap: 7px; align-items: center; flex-wrap: wrap; margin-bottom: 9px; }
+
+/* -------- Controls -------- */
+.input, .textarea, select, .btn {
+  background: var(--card); border: 1px solid var(--border); color: var(--text);
+  padding: 8px 11px; border-radius: 9px; font-size: 13px; font-weight: 600;
+  outline: none; font-family: var(--font);
+}
+.input:focus, .textarea:focus, select:focus { border-color: var(--primary); }
+.input.block, .textarea { width: 100%; display: block; margin-bottom: 12px; }
+.textarea { min-height: 180px; resize: vertical; font-weight: 600; }
+select { cursor: pointer; }
+label { display: block; font-size: 13px; color: var(--muted); margin: 8px 0 4px; font-weight: 700; }
+.chk { display: flex; align-items: center; gap: 6px; color: var(--text); font-weight: 600; }
+.chk input { width: auto; margin: 0; }
+
+.btn { cursor: pointer; }
+.btn:hover { border-color: var(--primary); }
+.btn-primary { background: var(--primary); border-color: var(--primary); color: #fff; font-weight: 700; }
+.btn-primary:hover { background: var(--primary-2); }
+.btn-ghost { background: transparent; }
+.btn-block { width: 100%; display: flex; align-items: center; justify-content: center; gap: 7px; }
+
+/* -------- Cards -------- */
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin-bottom: 14px; }
+.row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.inline-box { margin-top: 12px; }
+.hidden { display: none; }
+.pill { padding: 3px 10px; border-radius: 999px; background: var(--card-2); font-size: 12px; color: var(--muted); font-weight: 700; }
+.pill.on { background: rgba(47,123,246,.15); color: #7fb0ff; }
+.log { margin-top: 12px; font-family: ui-monospace, monospace; font-size: 12px; color: var(--muted); white-space: pre-wrap; max-height: 140px; overflow-y: auto; font-weight: 500; }
+
+/* -------- Loc nhom (chat filter) -------- */
+.chip { display: flex; align-items: center; gap: 6px; background: var(--card); border: 1px solid var(--border); border-radius: 9px; padding: 8px 11px; font-size: 13px; font-weight: 700; color: #cfcfcf; cursor: pointer; user-select: none; }
+.chip.on { background: var(--primary-soft); border-color: var(--primary); color: #7fb0ff; }
+.chat-panel { background: #0b0b0b; border: 1px solid var(--border); border-radius: 11px; padding: 8px 10px; margin-bottom: 12px; }
+.chat-panel .cp-head { font-size: 11px; color: var(--muted-2); font-weight: 800; padding: 2px 4px 5px; display: flex; justify-content: space-between; align-items: center; }
+.chat-panel .cp-head button { background: transparent; border: none; color: var(--primary); font-size: 12px; font-weight: 700; cursor: pointer; font-family: var(--font); }
+.cp-list { max-height: 220px; overflow-y: auto; }
+.cp-row { display: flex; align-items: center; gap: 8px; padding: 5px 4px; font-size: 12.5px; cursor: pointer; color: var(--text); font-weight: 600; }
+.cp-box { width: 16px; height: 16px; border-radius: 5px; border: 1px solid var(--border-2); flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+.cp-row.on .cp-box { background: var(--primary); border-color: var(--primary); }
+.cp-row:not(.on) { color: var(--muted); }
+
+/* -------- Them task tay -------- */
+.add-row { display: flex; align-items: center; gap: 9px; background: #0a0a0a; border: 1px dashed var(--border-2); border-radius: 11px; padding: 8px 10px; margin-bottom: 14px; }
+.add-row input { flex: 1; background: transparent; border: none; color: var(--text); outline: none; font-size: 13px; font-weight: 600; font-family: var(--font); }
+.add-row input::placeholder { color: var(--muted-2); }
+
+/* -------- Task list -------- */
+.task-list { display: flex; flex-direction: column; gap: 9px; }
+.task { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; display: flex; gap: 12px; align-items: flex-start; }
+.task-body { flex: 1; min-width: 0; }
+.task-title { font-weight: 700; margin-bottom: 3px; word-break: break-word; font-size: 14px; }
+.task.st-done .task-title, .task.st-reject .task-title { text-decoration: line-through; color: var(--muted); }
+.raw-hint { font-size: 12px; color: var(--muted-2); margin-bottom: 7px; font-weight: 600; }
+.task-meta { font-size: 12px; color: var(--muted); display: flex; gap: 9px; flex-wrap: wrap; align-items: center; font-weight: 600; }
+.brand-ico { display: flex; align-items: center; }
+.tag { font-size: 11px; padding: 2px 8px; border-radius: 999px; font-weight: 700; }
+.tag.mention, .tag.reply { background: #12274a; color: #7fb0ff; }
+.tag.name { background: #3a2c0c; color: #f5c451; }
+.tag.manual { color: #9db6e6; display: flex; align-items: center; gap: 3px; }
+.task a, .open-link { color: #5b9bff; text-decoration: none; font-weight: 700; display: inline-flex; align-items: center; gap: 3px; cursor: pointer; }
+.task a:hover { text-decoration: underline; }
+
+/* Status pill fill dac */
+.status-select {
+  border: none; border-radius: 999px; padding: 5px 11px; font-size: 12px;
+  font-weight: 800; cursor: pointer; font-family: var(--font); -webkit-appearance: none; appearance: none;
+}
+.status-select.st-pending    { background: var(--st-pending);    color: var(--st-pending-fg); }
+.status-select.st-inprogress { background: var(--st-inprogress); color: var(--st-inprogress-fg); }
+.status-select.st-done       { background: var(--st-done);       color: var(--st-done-fg); }
+.status-select.st-reject     { background: var(--st-reject);     color: var(--st-reject-fg); }
+.status-select option { background: var(--card); color: var(--text); }
+
+.empty { text-align: center; color: var(--muted); padding: 40px 0; font-weight: 600; }
+.spin { font-size: 12px; color: var(--muted); padding: 8px 0; font-weight: 600; }
+
+::-webkit-scrollbar { width: 9px; height: 9px; }
+::-webkit-scrollbar-thumb { background: #222; border-radius: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
