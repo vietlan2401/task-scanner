@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Task Scanner</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.24.0/dist/tabler-icons.min.css" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="brand"><img class="logo" src="../build/icon.png" alt="" /> Task Scanner</div>
+    <nav>
+      <button class="nav-item active" data-tab="tasks"><i class="ti ti-inbox nav-ico"></i> Đầu việc</button>
+      <button class="nav-item" data-tab="telegram"><i class="ti ti-brand-telegram nav-ico"></i> Telegram</button>
+      <button class="nav-item" data-tab="zalo"><i class="ti ti-message-circle nav-ico"></i> Zalo</button>
+      <button class="nav-item" data-tab="settings"><i class="ti ti-settings nav-ico"></i> Cài đặt</button>
+    </nav>
+    <div class="side-footer">
+      <button id="scan-all" class="btn btn-primary btn-block"><i class="ti ti-refresh"></i> Quét ngay</button>
+      <small id="status-line">Sẵn sàng</small>
+    </div>
+  </aside>
+
+  <main class="content">
+    <!-- TAB: DAU VIEC -->
+    <section class="tab active" id="tab-tasks">
+      <div class="tab-head">
+        <button id="toggle-sb" class="toggle-sb" title="Ẩn/hiện thanh bên"><i class="ti ti-menu-2"></i></button>
+        <h1>Đầu việc</h1>
+        <span class="count" id="task-count">0</span>
+      </div>
+
+      <div class="toolbar">
+        <input id="search" class="input" placeholder="Tìm đầu việc" style="flex:1;min-width:120px" />
+        <select id="filter-platform" class="input">
+          <option value="">Tất cả nền tảng</option>
+          <option value="telegram">Telegram</option>
+          <option value="zalo">Zalo</option>
+          <option value="manual">Tự nhập</option>
+        </select>
+        <select id="filter-trigger" class="input">
+          <option value="">Tất cả kiểu</option>
+          <option value="mention">@mention</option>
+          <option value="name">Nhắc tên</option>
+          <option value="reply">Reply</option>
+          <option value="dm">Tin riêng</option>
+        </select>
+        <span id="chat-chip" class="chip"><i class="ti ti-message-2"></i> <span id="chat-chip-label">Nhóm</span> <i class="ti ti-chevron-down"></i></span>
+        <select id="filter-status" class="input">
+          <option value="">Mọi trạng thái</option>
+          <option value="pending">Chờ</option>
+          <option value="inprogress">Đang làm</option>
+          <option value="done">Xong</option>
+          <option value="reject">Huỷ</option>
+        </select>
+        <button id="ai-resummarize" class="btn"><i class="ti ti-sparkles"></i> Tóm tắt lại</button>
+        <button id="clear-tasks" class="btn btn-ghost">Xoá hết</button>
+      </div>
+
+      <div id="chat-panel" class="chat-panel hidden">
+        <div class="cp-head">
+          <span>CHỌN NHÓM ĐỂ QUÉT (TICK NHIỀU) — bỏ trống = quét tất cả</span>
+          <button id="chat-reload">Tải danh sách nhóm</button>
+        </div>
+        <div id="chat-list" class="cp-list"><div class="spin">Bấm "Tải danh sách nhóm" (cần kết nối Telegram trước).</div></div>
+      </div>
+
+      <div class="add-row">
+        <i class="ti ti-plus" style="font-size:16px;color:#5b9bff"></i>
+        <input id="manual-input" placeholder="Thêm đầu việc tự nhập…" />
+        <button id="manual-add" class="btn btn-primary" style="padding:6px 13px">Thêm</button>
+      </div>
+
+      <div id="task-list" class="task-list"></div>
+      <div id="empty" class="empty">Chưa có đầu việc nào. Bấm <b>Quét ngay</b>, import Zalo, hoặc tự thêm.</div>
+    </section>
+
+    <!-- TAB: TELEGRAM -->
+    <section class="tab" id="tab-telegram">
+      <div class="tab-head"><button class="toggle-sb" data-toggle="1"><i class="ti ti-menu-2"></i></button><h1>Telegram</h1></div>
+      <div class="card">
+        <p class="muted">Kết nối tài khoản Telegram để tự động quét. Lần đầu cần nhập mã xác thực gửi về app Telegram.</p>
+        <div class="row">
+          <button id="tg-connect" class="btn btn-primary">Kết nối Telegram</button>
+          <span id="tg-state" class="pill">Chưa kết nối</span>
+        </div>
+        <div id="tg-code-box" class="inline-box hidden">
+          <label>Mã xác thực (gửi về Telegram)</label>
+          <div class="row"><input id="tg-code" class="input" placeholder="12345" /><button id="tg-code-submit" class="btn">Gửi mã</button></div>
+        </div>
+        <div id="tg-pass-box" class="inline-box hidden">
+          <label>Mật khẩu 2 lớp (nếu có)</label>
+          <div class="row"><input id="tg-pass" type="password" class="input" placeholder="••••••" /><button id="tg-pass-submit" class="btn">Gửi</button></div>
+        </div>
+        <div id="tg-log" class="log"></div>
+      </div>
+      <div class="card">
+        <button id="tg-scan" class="btn btn-primary">Quét Telegram ngay</button>
+        <p class="muted">Chỉ quét các nhóm đã chọn ở bộ lọc "Nhóm" (tab Đầu việc). Bỏ trống = quét tất cả.</p>
+      </div>
+    </section>
+
+    <!-- TAB: ZALO -->
+    <section class="tab" id="tab-zalo">
+      <div class="tab-head"><button class="toggle-sb" data-toggle="1"><i class="ti ti-menu-2"></i></button><h1>Zalo — Import thủ công</h1></div>
+      <div class="card">
+        <p class="muted">Zalo không có API chính thức nên cần dán nội dung chat vào đây. Cứ <b>bôi chọn cả đoạn chat rồi copy dán vào</b> — <b>không cần dòng trống</b>, mỗi dòng tính là 1 tin, các mốc giờ tự được bỏ. App bắt tin nào <b>nhắc tên qua</b> (nhớ điền tên/biệt danh ở tab Cài đặt). Nâng cao: dán JSON.</p>
+        <textarea id="zalo-input" class="textarea" placeholder="Dán cả mớ tin nhắn Zalo copy được vào đây (không cần dòng trống)..."></textarea>
+        <div class="row"><button id="zalo-import" class="btn btn-primary">Import &amp; quét</button><span id="zalo-result" class="muted"></span></div>
+      </div>
+    </section>
+
+    <!-- TAB: CAI DAT -->
+    <section class="tab" id="tab-settings">
+      <div class="tab-head"><button class="toggle-sb" data-toggle="1"><i class="ti ti-menu-2"></i></button><h1>Cài đặt</h1></div>
+      <div class="card">
+        <h3>Danh tính của qua</h3>
+        <p class="muted">Dùng để nhận diện khi qua bị tag / nhắc tên. Nhiều giá trị cách nhau dấu phẩy.</p>
+        <label>Username (không cần @)</label>
+        <input id="cfg-usernames" class="input block" placeholder="qua, quanguyen" />
+        <label>Tên / biệt danh hay bị gọi</label>
+        <input id="cfg-names" class="input block" placeholder="Nguyễn Văn A, anh A, sếp A" />
+      </div>
+      <div class="card">
+        <h3>Telegram API</h3>
+        <p class="muted">Lấy tại my.telegram.org → API development tools.</p>
+        <label>api_id</label><input id="cfg-apiid" class="input block" placeholder="1234567" />
+        <label>api_hash</label><input id="cfg-apihash" class="input block" placeholder="abcdef0123..." />
+        <label>Số điện thoại (có mã quốc gia)</label><input id="cfg-phone" class="input block" placeholder="+8490xxxxxxx" />
+      </div>
+      <div class="card">
+        <h3>Phạm vi quét</h3>
+        <label>Quét lùi bao nhiêu ngày</label>
+        <input id="cfg-lookback" type="number" min="1" max="90" class="input block" />
+        <label class="chk"><input type="checkbox" id="cfg-names-on" /> Bắt cả khi bị nhắc tên trong nội dung</label>
+        <label class="chk"><input type="checkbox" id="cfg-replies-on" /> Bắt cả khi có người reply vào tin của qua</label>
+        <label class="chk"><input type="checkbox" id="cfg-private-on" /> Bắt mọi tin trong chat riêng 1-1 (có thể hơi nhiều)</label>
+      </div>
+      <div class="card">
+        <h3>AI tóm tắt đầu việc (Google Gemini)</h3>
+        <p class="muted">Bật để AI tự suy ra đầu việc ngắn gọn. Key miễn phí tại aistudio.google.com → Get API key.</p>
+        <label class="chk"><input type="checkbox" id="cfg-ai-on" /> Bật AI tóm tắt</label>
+        <label>Gemini API key</label><input id="cfg-ai-key" class="input block" placeholder="AIza..." />
+        <label>Model</label><input id="cfg-ai-model" class="input block" placeholder="gemini-flash-latest" />
+      </div>
+      <button id="save-settings" class="btn btn-primary">Lưu cài đặt</button>
+      <span id="save-note" class="muted"></span>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
